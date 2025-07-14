@@ -3,9 +3,8 @@ import ItemList from "./ItemList";
 import { clearCart } from "../utils/cartSlice";
 
 const Cart = () => {
-  const store = useSelector((store) => store);
+const cartItems = useSelector((store) => store.cart.items);
 
-  const cartItems = store.cart.items;
   
   const dispatch = useDispatch()
   const handleClearCart = () => {
