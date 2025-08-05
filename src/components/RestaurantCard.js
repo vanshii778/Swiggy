@@ -4,16 +4,23 @@ import UserContext from "../utils/UserContext";
 
 const RestaurantCard = ({ resData }) => {
   const { loggedInUser } = useContext(UserContext);
-  const { cloudinaryImageId, name, cuisines, avgRating, costForTwo } =
+  const { cloudinaryImageId, name, cuisines, avgRating, costForTwo, offers } =
     resData?.info;
-
   return (
     <div
       data-testid="resCard"
-      className="m-4 p-4 w-[250px] bg-white rounded-xl shadow-md hover:shadow-xl hover:scale-105 transition-transform duration-300"
+      className="m-4 p-4 w-[250px] bg-gradient-to-br from-white via-yellow-50 to-orange-50 rounded-2xl shadow-md hover:shadow-2xl hover:scale-105 hover:border-4 hover:border-yellow-300 transition-transform duration-300 relative overflow-visible"
     >
+      {/* Unique Offer Ribbon */}
+      {offers && (
+        <div className="absolute -top-3 -left-3 z-10">
+          <div className="transform -rotate-12 bg-gradient-to-r from-pink-400 via-yellow-300 to-orange-400 text-white text-xs font-bold px-4 py-1 rounded-lg shadow-lg flex items-center gap-1 border-2 border-white">
+            <span role='img' aria-label='offer'>🏷️</span> {offers}
+          </div>
+        </div>
+      )}
       <img
-        className="rounded-lg w-full h-40 object-cover"
+        className="rounded-lg w-full h-40 object-cover mb-2"
         alt="res-logo"
         src={CDN_URL + cloudinaryImageId}
       />

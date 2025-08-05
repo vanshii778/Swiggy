@@ -4,6 +4,7 @@ import Shimmer from "./Shimmer";
 import { Link } from "react-router-dom";
 import useOnlineStatus from "../utils/useOnlineStatus";
 import UserContext from "../utils/UserContext";
+import withRestaurantBadges from "./HOC/withRestaurantBadges"
 
 const Body = () => {
   const [listOfRestaurants, setlistOfRestaurants] = useState([]);
@@ -13,6 +14,8 @@ const Body = () => {
   const onlineStatus = useOnlineStatus();
   const { loggedInUser, setUserName } = useContext(UserContext);
 
+  const RestaurantCardWithBadges = withRestaurantBadges(RestaurantCard);
+  
   useEffect(() => {
     fetchData();
   }, []);
@@ -21,8 +24,8 @@ const Body = () => {
     const data = await fetch(
       "https://www.swiggy.com/dapi/restaurants/list/v5?lat=23.022505&lng=72.5713621&is-seo-homepage-enabled=true&page_type=DESKTOP_WEB_LISTING"
     );
-
     const json = await data.json();
+
     setlistOfRestaurants(
       json?.data?.cards[4]?.card?.card?.gridElements?.infoWithStyle?.restaurants || []
     );
@@ -94,6 +97,17 @@ const Body = () => {
         </div>
       </div>
 
+      {/* Unique Top Offers Banner */}
+      {filteredRestaurant.some(res => res.info.offers) && (
+        <div className="mb-8 flex items-center justify-center">
+          <div className="w-full max-w-2xl bg-gradient-to-r from-pink-400 via-yellow-300 to-orange-400 rounded-2xl shadow-lg py-4 px-8 flex items-center gap-4 border-4 border-yellow-200 animate-pulse">
+            <span className="text-3xl">🎉</span>
+            <span className="text-xl sm:text-2xl font-extrabold text-gray-900 tracking-wide drop-shadow">Top Offers Today</span>
+            <span className="text-3xl">🍔🍕🥗</span>
+          </div>
+        </div>
+      )}
+
       {/* Restaurant Cards Section */}
       <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {filteredRestaurant.map((restaurant) => (
@@ -102,7 +116,7 @@ const Body = () => {
             key={restaurant.info.id}
             className="hover:scale-105 transition-transform duration-200"
           >
-            <RestaurantCard resData={restaurant} />
+            <RestaurantCardWithBadges resData={restaurant} />
           </Link>
         ))}
       </div>

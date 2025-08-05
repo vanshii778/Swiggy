@@ -3,16 +3,20 @@ import { useParams } from "react-router-dom";
 import useRestaurantMenu from "../utils/useRestaurantMenu";
 import RestaurantCategory from "./RestaurantCategory";
 import { useState } from "react";
+import { useSelector } from "react-redux";
+
 const RestaurantMenu = () => {
   const { resId } = useParams();
   const dummy = "Dummy Data";
   const resInfo = useRestaurantMenu(resId);
   const [showIndex, setShowIndex] = useState(0);
   const [filterType, setFilterType] = useState("all");
+  const cartItems = useSelector((store) => store.cart.items);
+
   if (resInfo === null) return <Shimmer />;
 
   const { name, cuisines, costForTwoMessage } =
-    resInfo?.cards[2]?.card?.card?.info || {};
+    resInfo?.cards[4]?.card?.card?.info || {};
 
   const { itemCards } =
     resInfo?.cards[4]?.groupedCard?.cardGroupMap?.REGULAR?.cards[2]?.card?.card;
@@ -23,13 +27,21 @@ const RestaurantMenu = () => {
         c.card?.["card"]?.["@type"] ===
         "type.googleapis.com/swiggy.presentation.food.v2.ItemCategory"
     );
-
   const type =
     resInfo?.cards[4]?.groupedCard?.cardGroupMap?.REGULAR?.cards.filter(
       (c) =>
         c.card?.["card"]?.["@type"] ===
         "type.googleapis.com/swiggy.presentation.food.v2.Dish"
     );
+
+  // Helper to merge cart quantities into menu items
+  const mergeQuantities = (menuItems) => {
+    return menuItems.map((item) => {
+      const cartItem = cartItems.find((ci) => ci.card.info.id === item.card.info.id);
+      return cartItem ? { ...item, quantity: cartItem.quantity } : item;
+    });
+  };
+
   return (
     <div className="text-center">
       <h1 className="font-bold my-6 text-2xl">{name}</h1>
@@ -86,7 +98,7 @@ const RestaurantMenu = () => {
         //controlled component
         <RestaurantCategory
           key={category?.card?.card.title}
-          data={category?.card?.card}
+          data={{ ...category?.card?.card, itemCards: mergeQuantities(category?.card?.card.itemCards) }}
           showItems={index === showIndex ? true : false}
           setShowIndex={() => setShowIndex(index)}
           dummy={dummy}

@@ -8,17 +8,40 @@ const cartSlice = createSlice(
         },
         reducers: {
             addItem: (state,action) => {
-                //Vanilla(older) Redux => Don't Mutate State, returning was mandatory
-                //const newState = [...state];
-                //newState.items.push(action.payload);
-                //return newState;
-
-                //Redux Toolkit
-                //mutating the state here
-                state.items.push(action.payload);
+                // Check if item already exists
+                const existing = state.items.find(item => item.card.info.id === action.payload.card.info.id);
+                if (existing) {
+                    existing.quantity = (existing.quantity || 1) + 1;
+                } else {
+                    state.items.push({...action.payload, quantity: 1});
+                }
             },
             removeItem: (state,action) => {
-                state.items.pop();
+                // Remove one quantity or remove item if quantity is 1
+                const idx = state.items.findIndex(item => item.card.info.id === action.payload.card.info.id);
+                if (idx > -1) {
+                    if (state.items[idx].quantity > 1) {
+                        state.items[idx].quantity -= 1;
+                    } else {
+                        state.items.splice(idx, 1);
+                    }
+                }
+            },
+            incrementQuantity: (state,action) => {
+                const existing = state.items.find(item => item.card.info.id === action.payload.card.info.id);
+                if (existing) {
+                    existing.quantity = (existing.quantity || 1) + 1;
+                }
+            },
+            decrementQuantity: (state,action) => {
+                const idx = state.items.findIndex(item => item.card.info.id === action.payload.card.info.id);
+                if (idx > -1) {
+                    if (state.items[idx].quantity > 1) {
+                        state.items[idx].quantity -= 1;
+                    } else {
+                        state.items.splice(idx, 1);
+                    }
+                }
             },
             clearCart: (state) => {
                 //RTK - either Mutate the existing state or return a new state
@@ -29,5 +52,5 @@ const cartSlice = createSlice(
         }
     }
 )
-export const {addItem, removeItem, clearCart} = cartSlice.actions;
+export const {addItem, removeItem, clearCart, incrementQuantity, decrementQuantity} = cartSlice.actions;
 export default cartSlice.reducer; 

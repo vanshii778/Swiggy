@@ -30,6 +30,42 @@ const Cart = () => {
               </button>
             </div>
 
+            {/* Cart Items Table */}
+            <div className="overflow-x-auto">
+              <table className="w-full text-left mb-6">
+                <thead>
+                  <tr className="border-b">
+                    <th className="py-2">Item</th>
+                    <th className="py-2">Price</th>
+                    <th className="py-2">Quantity</th>
+                    <th className="py-2">Subtotal</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {cartItems.map((item, idx) => (
+                    <tr key={item.card.info.id + '-' + idx} className="border-b">
+                      <td className="py-2 font-medium">{item.card.info.name}</td>
+                      <td className="py-2">
+                        ₹{item.card.info.price ? item.card.info.price / 100 : item.card.info.defaultPrice / 100}
+                      </td>
+                      <td className="py-2">{item.quantity}</td>
+                      <td className="py-2">
+                        ₹{((item.card.info.price ? item.card.info.price : item.card.info.defaultPrice) * item.quantity / 100).toFixed(2)}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Total Price */}
+            <div className="text-right text-xl font-bold text-gray-800 mb-2">
+              Total: ₹{
+                cartItems.reduce((sum, item) => sum + ((item.card.info.price ? item.card.info.price : item.card.info.defaultPrice) * item.quantity / 100), 0).toFixed(2)
+              }
+            </div>
+
+            {/* Quantity controls still available below if needed */}
             <ItemList items={cartItems} />
           </>
         )}

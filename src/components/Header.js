@@ -12,15 +12,19 @@ export const Header = () => {
   const cartItems = useSelector((store) => store.cart.items);
 
   return (
-    <div className="flex justify-between items-center px-6 py-4 bg-pink-100 shadow-lg sm:bg-yellow-50 lg:bg-green-50">
+    <div className="flex justify-between items-center px-6 py-4 bg-white shadow-md border-b">
       <div className="logo-container">
-        <img className="w-20 sm:w-24 hover:scale-105 transition-transform duration-300" src={LOGO_URL} alt="logo" />
+        <img
+          className="w-20 sm:w-24"
+          src={LOGO_URL}
+          alt="logo"
+        />
       </div>
 
       <div className="flex items-center">
-        <ul className="flex flex-wrap items-center gap-4 text-lg font-medium">
+        <ul className="flex flex-wrap items-center gap-4 text-base font-medium">
           <li className="text-gray-700">
-            Online Status: <span className="font-semibold">{onlineStatus ? "✅" : "🔴"}</span>
+            Online: <span className="font-bold">{onlineStatus ? "✅" : "🔴"}</span>
           </li>
 
           <li>
@@ -50,7 +54,7 @@ export const Header = () => {
           <li>
             <Link
               to="/cart"
-              className="text-white bg-blue-500 hover:bg-blue-600 px-3 py-1 rounded-lg transition-colors duration-200"
+              className="text-white bg-blue-500 hover:bg-blue-600 px-3 py-1 rounded transition-colors duration-200"
             >
               Cart - ({cartItems.length} items)
             </Link>
@@ -58,7 +62,7 @@ export const Header = () => {
 
           <li>
             <button
-              className="bg-purple-500 text-white px-4 py-1 rounded-lg hover:bg-purple-600 transition-colors duration-200"
+              className="bg-purple-500 text-white px-4 py-1 rounded hover:bg-purple-600 transition-colors duration-200"
               onClick={() =>
                 setbtnNameReact((prev) => (prev === "Login" ? "Logout" : "Login"))
               }
